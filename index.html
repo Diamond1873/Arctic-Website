@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #0A2540, #1E40AF);
+            margin: 0;
+            position: relative;
+        }
+        .container {
+            background: #E0F2FE;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            width: 350px;
+            text-align: center;
+            position: relative;
+        }
+        .logo {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 15px;
+        }
+        h2 {
+            margin-bottom: 20px;
+            color: #0A2540;
+        }
+        .input-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+        input {
+            width: 90%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #1E40AF;
+            border-radius: 8px;
+            font-size: 16px;
+            background: #E3F2FD;
+            color: #0A2540;
+            text-align: center;
+        }
+        button {
+            width: 90%;
+            padding: 12px;
+            border: none;
+            background: #60A5FA;
+            color: white;
+            font-size: 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+        button:hover {
+            background: #3B82F6;
+        }
+        #message {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #10B981;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="picture/icon.png" alt="Logo" class="logo">
+        <h2>สมัครสมาชิก</h2>
+        <form id="registerForm">
+            <div class="input-container">
+                <input type="text" id="username" placeholder="ชื่อผู้ใช้" required>
+                <input type="email" id="email" placeholder="อีเมล" required>
+                <input type="password" id="password" placeholder="รหัสผ่าน" required>
+                <button type="submit">สมัครสมาชิก</button>
+            </div>
+        </form>
+        <p id="message"></p>
+    </div>
+
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            const data = { username, email, password };
+            const fileContent = JSON.stringify(data, null, 2);  // Convert data to formatted JSON
+
+            // GitHub Repository details
+            const owner = "your-github-username";
+            const repo = "your-repository";
+            const path = "path/to/data.json";  // Path where the file will be stored
+
+            // Personal Access Token
+            const token = "your-personal-access-token";
+
+            // GitHub API URL to create or update file in repo
+            const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
+
+            // Prepare data to send via POST request
+            const bodyData = {
+                message: "Add new user registration data",
+                content: btoa(fileContent),  // Encode content to base64
+            };
+
+            fetch(url, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `token ${token}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(bodyData),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Data uploaded:', data);
+                document.getElementById('message').innerText = "✅ สมัครสมาชิกสำเร็จ!";
+            })
+            .catch(error => {
+                console.error('Error uploading data:', error);
+                document.getElementById('message').innerText = "❌ เกิดข้อผิดพลาด!";
+            });
+        });
+    </script>
+</body>
+</html>
